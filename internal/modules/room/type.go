@@ -14,3 +14,7 @@ type StatusResponse struct {
 	InActive int64          `json:"inactive"`
 	Data     []RoomResponse `json:"data"`
 }
+
+type RequestParam struct {
+	Store string `form:"store" json:"store" validate:"omitempty,max=255"`
+}

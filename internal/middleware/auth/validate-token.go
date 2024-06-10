@@ -38,9 +38,7 @@ func ValidateToken() gin.HandlerFunc {
 			c.Abort()
 		}
 
-		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			fmt.Println(claims)
-		} else {
+		if !token.Valid {
 			fmt.Println(err)
 		}
 

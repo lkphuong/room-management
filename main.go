@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/lkphuong/room-management/internal/modules/auth"
+	"github.com/lkphuong/room-management/internal/modules/room"
+	"github.com/lkphuong/room-management/internal/modules/store"
 )
 
 func main() {
@@ -24,6 +26,8 @@ func main() {
 	r := gin.Default()
 
 	auth.AuthRoutes(r)
+	room.RoomRoutes(r)
+	store.StoreRoutes(r)
 
 	r.Run(httpPort)
 

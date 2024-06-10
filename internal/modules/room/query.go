@@ -6,7 +6,7 @@ const (
 			CuaHang.code AS store_code,
 			CuaHang.name AS store_name,
 			phong.code AS room_code,
-			t.start
+			ISNULL(t.start, '') AS start
 		FROM (
 			SELECT
 				*
