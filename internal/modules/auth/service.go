@@ -8,11 +8,11 @@ import (
 )
 
 var (
-	_repository AuthRepository
+	repository Repository
 )
 
 func init() {
-	_repository = AuthRepository{}
+	repository = Repository{}
 }
 
 type Service struct{}
@@ -22,7 +22,7 @@ func (s *Service) Login(ctx context.Context, db *sql.DB, param LoginParam) *util
 		return utils.NewResponse(nil, err.Error(), 400)
 	}
 
-	result, err := _repository.Login(ctx, db, param)
+	result, err := repository.Login(ctx, db, param)
 
 	utils.FailOnError(err, "Failed to login")
 
