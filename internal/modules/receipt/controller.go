@@ -1,4 +1,4 @@
-package room
+package receipt
 
 import (
 	"github.com/gin-gonic/gin"
@@ -9,14 +9,20 @@ var (
 	service *Service
 )
 
-func RoomStatus(c *gin.Context) {
+func ReceiptDetail(c *gin.Context) {
 	r := c.Request
 
 	ctx := r.Context()
 
+	var p ReceiptDetailParam
+
+	room := c.Query("room")
 	store := c.Query("store")
 
-	result := service.GetRoomByStores(ctx, db, store)
+	p.Room = room
+	p.Store = store
+
+	result := service.GetBillDetail(ctx, db, p)
 
 	utils.JSONResponse(*result, c)
 }

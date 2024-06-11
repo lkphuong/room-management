@@ -4,16 +4,14 @@ import (
 	"context"
 	"database/sql"
 
+	receipt "github.com/lkphuong/room-management/internal/modules/receipt"
 	"github.com/lkphuong/room-management/internal/utils"
 )
 
 var (
-	repository Repository
+	repository        Repository
+	receiptRepository receipt.Repository
 )
-
-func init() {
-	repository = Repository{}
-}
 
 type Service struct{}
 
@@ -22,13 +20,15 @@ func (s *Service) GetRoomByStores(ctx context.Context, db *sql.DB, store string)
 	var rooms []RoomResponse
 
 	rooms, err := repository.GetRoomsByStore(ctx, db, store)
-
 	utils.FailOnError(err, "Failed to get rooms")
+
+	revenue, err := receiptRepository.RevenueRoom(ctx, db, store)
+	utils.FailOnError(err, "Failed to get revenue")
 
 	var counter = 0
 	var roomsResponse []RoomResponse
 	for _, room := range rooms {
-		if len(room.Start) > 0 {
+		if utils.ConvertTime(room.Start) != "" {
 			counter++
 		}
 		var roomResponse = RoomResponse{
@@ -40,10 +40,18 @@ func (s *Service) GetRoomByStores(ctx context.Context, db *sql.DB, store string)
 		start, err := utils.FormatDateString(room.Start)
 		utils.FailOnError(err, "Failed to convert start date")
 
-		roomResponse.Start = start
+		roomResponse.Start = utils.ConvertTime(start)
 
 		opened := utils.CalculateTime(start)
 		roomResponse.Opened = opened
+
+		if len(revenue) > 0 {
+			for _, rev := range revenue {
+				if room.RoomCode == rev.RoomCode {
+					roomResponse.Revenue = rev.Revenue
+				}
+			}
+		}
 
 		roomsResponse = append(roomsResponse, roomResponse)
 	}

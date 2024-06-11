@@ -9,7 +9,7 @@ import (
 
 func CalculateTime(start string) string {
 
-	if start == "" {
+	if start == hardcode.DEFAULT_DATE {
 		return ""
 	}
 
@@ -41,4 +41,12 @@ func FormatDateString(date string) (string, error) {
 		return "", err
 	}
 	return t.Format(hardcode.DATETIME_LAYOUT), nil
+}
+
+func ConvertTime(date string) string {
+	if date == hardcode.DEFAULT_DATE || date == hardcode.DEFAULT_DATETIME {
+		return ""
+	}
+
+	return date
 }

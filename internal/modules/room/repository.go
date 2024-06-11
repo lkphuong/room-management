@@ -34,7 +34,6 @@ func (rr *Repository) GetRoomsByStore(ctx context.Context, db *sql.DB, store str
 
 		return result, nil
 	} else {
-
 		err := queries.Raw(fmt.Sprintf(SELECT_ROOMS_BY_STORE, store)).Bind(ctx, db, &result)
 
 		if err != nil {

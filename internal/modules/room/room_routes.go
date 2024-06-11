@@ -5,7 +5,7 @@ import (
 	middleware "github.com/lkphuong/room-management/internal/middleware/auth"
 )
 
-func RoomRoutes(r *gin.Engine) {
+func RoomRoutes(r *gin.RouterGroup) {
 	roomGroup := r.Group("/room")
 	{
 		roomGroup.GET("/", middleware.ValidateToken(), func(c *gin.Context) {

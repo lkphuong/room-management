@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/lkphuong/room-management/internal/modules/auth"
+	"github.com/lkphuong/room-management/internal/modules/receipt"
 	"github.com/lkphuong/room-management/internal/modules/room"
 	"github.com/lkphuong/room-management/internal/modules/store"
 )
@@ -25,9 +27,18 @@ func main() {
 
 	r := gin.Default()
 
-	auth.AuthRoutes(r)
-	room.RoomRoutes(r)
-	store.StoreRoutes(r)
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+
+	r.Use(cors.New(config))
+
+	api := r.Group("/api")
+	{
+		auth.AuthRoutes(api)
+		room.RoomRoutes(api)
+		store.StoreRoutes(api)
+		receipt.ReceiptRoutes(api)
+	}
 
 	r.Run(httpPort)
 

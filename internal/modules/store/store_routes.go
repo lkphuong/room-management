@@ -5,8 +5,8 @@ import (
 	middleware "github.com/lkphuong/room-management/internal/middleware/auth"
 )
 
-func StoreRoutes(r *gin.Engine) {
-	storeGroup := r.Group("/store")
+func StoreRoutes(r *gin.RouterGroup) {
+	storeGroup := r.Group("/stores")
 	{
 		storeGroup.GET("/", middleware.ValidateToken(), func(c *gin.Context) {
 			GetAll(c)

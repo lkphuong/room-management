@@ -35,6 +35,7 @@ require (
 require (
 	github.com/friendsofgo/errors v0.9.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
+	github.com/gin-contrib/cors v1.7.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-playground/form v3.1.4+incompatible
 	github.com/go-playground/locales v0.14.1 // indirect

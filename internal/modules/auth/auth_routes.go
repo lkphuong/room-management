@@ -2,13 +2,12 @@ package auth
 
 import (
 	"github.com/gin-gonic/gin"
-	middleware "github.com/lkphuong/room-management/internal/middleware/auth"
 )
 
-func AuthRoutes(r *gin.Engine) {
+func AuthRoutes(r *gin.RouterGroup) {
 	authGroup := r.Group("/auth")
 	{
-		authGroup.POST("/login", middleware.ValidateToken(), func(c *gin.Context) {
+		authGroup.POST("/login", func(c *gin.Context) {
 			Login(c)
 		})
 	}
