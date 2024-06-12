@@ -20,10 +20,14 @@ func (s *Service) GetRoomByStores(ctx context.Context, db *sql.DB, store string)
 	var rooms []RoomResponse
 
 	rooms, err := repository.GetRoomsByStore(ctx, db, store)
-	utils.FailOnError(err, "Failed to get rooms")
+	if utils.FailOnError(err, "Failed to get rooms") != nil {
+		return utils.NewResponse(nil, "Failed to get rooms", 400)
+	}
 
 	revenue, err := receiptRepository.RevenueRoom(ctx, db, store)
-	utils.FailOnError(err, "Failed to get revenue")
+	if utils.FailOnError(err, "Failed to get revenue") != nil {
+		return utils.NewResponse(nil, "Failed to get revenue", 400)
+	}
 
 	var counter = 0
 	var roomsResponse []RoomResponse
@@ -38,7 +42,9 @@ func (s *Service) GetRoomByStores(ctx context.Context, db *sql.DB, store string)
 		}
 
 		start, err := utils.FormatDateString(room.Start)
-		utils.FailOnError(err, "Failed to convert start date")
+		if utils.FailOnError(err, "Failed to convert start date") != nil {
+			return utils.NewResponse(nil, "Failed to convert start date", 400)
+		}
 
 		roomResponse.Start = utils.ConvertTime(start)
 

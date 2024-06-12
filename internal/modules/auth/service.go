@@ -24,11 +24,15 @@ func (s *Service) Login(ctx context.Context, db *sql.DB, param LoginParam) *util
 
 	result, err := repository.Login(ctx, db, param)
 
-	utils.FailOnError(err, "Failed to login")
+	if utils.FailOnError(err, "Failed to login") != nil {
+		return utils.NewResponse(nil, "Failed to login", 400)
+	}
 
 	// #region generate jwt token
 	token, err := generateJWTToken(result)
-	utils.FailOnError(err, "Failed to generate jwt token")
+	if utils.FailOnError(err, "Failed to generate jwt token") != nil {
+		return utils.NewResponse(nil, "Failed to generate jwt token", 400)
+	}
 	// #endregion
 
 	return utils.NewResponse(token, "Login success", 200)

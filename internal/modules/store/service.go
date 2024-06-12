@@ -21,13 +21,19 @@ type Service struct{}
 func (s *Service) GetStores(ctx context.Context, db *sql.DB) *utils.Response {
 
 	stores, err := repository.GetStores(ctx, db)
-	utils.FailOnError(err, "Failed to get stores")
+	if utils.FailOnError(err, "Failed to get stores") != nil {
+		return utils.NewResponse(nil, "Failed to get stores", 400)
+	}
 
 	rooms, err := roomRepository.GetRooms(ctx, db)
-	utils.FailOnError(err, "Failed to get rooms")
+	if utils.FailOnError(err, "Failed to get rooms") != nil {
+		return utils.NewResponse(nil, "Failed to get rooms", 400)
+	}
 
 	revenue, err := receiptRepository.RevenueStore(ctx, db)
-	utils.FailOnError(err, "Failed to get revenue")
+	if utils.FailOnError(err, "Failed to get revenue") != nil {
+		return utils.NewResponse(nil, "Failed to get revenue", 400)
+	}
 
 	var response []AllStoreResponse
 
