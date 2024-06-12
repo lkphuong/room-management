@@ -9,4 +9,4 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 - Go version 1.x
-- Docker 
+- Docker ( docker build --no-cache . -t phuonglk/room-management:latest --platform linux/amd64)

@@ -25,7 +25,7 @@ func (r *Repository) RevenueStore(ctx context.Context, db *sql.DB) ([]RevenueRes
 func (r *Repository) RevenueRoom(ctx context.Context, db *sql.DB, store string) ([]RevenueRoomResponse, error) {
 	var result []RevenueRoomResponse
 
-	err := queries.Raw(fmt.Sprintf(SELECT_RECEIPT_BY_STORE, store)).Bind(ctx, db, &result)
+	err := queries.Raw(fmt.Sprintf(SELECT_RECEIPT_BY_STORE, store, store)).Bind(ctx, db, &result)
 
 	if err != nil {
 		return nil, err

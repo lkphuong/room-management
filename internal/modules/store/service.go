@@ -51,6 +51,7 @@ func (s *Service) GetStores(ctx context.Context, db *sql.DB) *utils.Response {
 			for _, rev := range revenue {
 				if store.StoreID == rev.StoreCode {
 					storeResponse.Revenue = rev.Revenue
+					storeResponse.RevenueTmp = rev.RevenueTmp
 				}
 			}
 		}

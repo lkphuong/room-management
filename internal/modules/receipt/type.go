@@ -1,13 +1,15 @@
 package receipt
 
 type RevenueResponse struct {
-	Revenue   float64 `boil:"revenue" json:"revenue"`
-	StoreCode string  `boil:"store_code" json:"store_code"`
+	Revenue    float64 `boil:"revenue" json:"revenue"`
+	StoreCode  string  `boil:"store_code" json:"store_code"`
+	RevenueTmp float64 `boil:"revenue_tmp" json:"revenue_tmp"`
 }
 
 type RevenueRoomResponse struct {
-	RoomCode string  `boil:"room_code" json:"room_code"`
-	Revenue  float64 `boil:"revenue" json:"revenue"`
+	RoomCode   string  `boil:"room_code" json:"room_code"`
+	Revenue    float64 `boil:"revenue" json:"revenue"`
+	RevenueTmp float64 `boil:"revenue_tmp" json:"revenue_tmp"`
 }
 
 type ReceiptDetailResponse struct {

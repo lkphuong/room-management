@@ -49,6 +49,7 @@ func (s *Service) GetRoomByStores(ctx context.Context, db *sql.DB, store string)
 			for _, rev := range revenue {
 				if room.RoomCode == rev.RoomCode {
 					roomResponse.Revenue = rev.Revenue
+					roomResponse.RevenueTmp = rev.RevenueTmp
 				}
 			}
 		}
