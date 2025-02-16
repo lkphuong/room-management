@@ -4,9 +4,10 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/lkphuong/room-management/configs/hardcode"
+	"github.com/lkphuong/room-management/configs/http_code"
 	receipt "github.com/lkphuong/room-management/internal/modules/receipt"
 	"github.com/lkphuong/room-management/internal/utils"
+	"github.com/lkphuong/room-management/internal/validations"
 )
 
 var (
@@ -17,30 +18,21 @@ var (
 type Service struct{}
 
 func (s *Service) GetRoomByStore(ctx context.Context, db *sql.DB, store string, user utils.JwtPayload) *utils.Response {
-	// #region check if user has permission to access this store
-	storeIDs := user.StoreIDs
-	flag := false
-	for _, storeID := range storeIDs {
-		if storeID == store {
-			flag = true
-			break
-		}
+	errMsg := validations.ValidateUserInStore(store, user)
+	if errMsg != nil {
+		return utils.NewResponse(nil, *errMsg, http_code.BAD_REQUEST)
 	}
-	if !flag && user.Code != hardcode.OPERATOR_ACCOUNT {
-		return utils.NewResponse(nil, "You don't have permission to access this store", 400)
-	}
-	// #endregion
 
 	var rooms []RoomResponse
 
 	rooms, err := repository.GetRoomsByStore(ctx, db, store)
 	if utils.FailOnError(err, "Failed to get rooms") != nil {
-		return utils.NewResponse(nil, "Failed to get rooms", 400)
+		return utils.NewResponse(nil, "Failed to get rooms", http_code.BAD_REQUEST)
 	}
 
 	revenue, err := receiptRepository.RevenueRoom(ctx, db, store)
 	if utils.FailOnError(err, "Failed to get revenue") != nil {
-		return utils.NewResponse(nil, "Failed to get revenue", 400)
+		return utils.NewResponse(nil, "Failed to get revenue", http_code.BAD_REQUEST)
 	}
 
 	var counter = 0
@@ -57,7 +49,7 @@ func (s *Service) GetRoomByStore(ctx context.Context, db *sql.DB, store string, 
 
 		start, err := utils.FormatDateString(room.Start)
 		if utils.FailOnError(err, "Failed to convert start date") != nil {
-			return utils.NewResponse(nil, "Failed to convert start date", 400)
+			return utils.NewResponse(nil, "Failed to convert start date", http_code.BAD_REQUEST)
 		}
 
 		roomResponse.Start = utils.ConvertTime(start)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/lkphuong/room-management/configs/http_code"
 	"github.com/lkphuong/room-management/internal/utils"
 )
 
@@ -19,13 +20,13 @@ type Service struct{}
 
 func (s *Service) Login(ctx context.Context, db *sql.DB, param LoginParam) *utils.Response {
 	if err := param.Validate(); err != nil {
-		return utils.NewResponse(nil, err.Error(), 400)
+		return utils.NewResponse(nil, err.Error(), http_code.BAD_REQUEST)
 	}
 
 	result, err := repository.Login(ctx, db, param)
 
 	if utils.FailOnError(err, "Failed to login") != nil || len(result) == 0 {
-		return utils.NewResponse(nil, "Failed to login", 400)
+		return utils.NewResponse(nil, "Failed to login", http_code.BAD_REQUEST)
 	}
 
 	storeIDs := []string{}
@@ -43,9 +44,9 @@ func (s *Service) Login(ctx context.Context, db *sql.DB, param LoginParam) *util
 	// #region generate jwt token
 	token, err := generateJWTToken(payload)
 	if utils.FailOnError(err, "Failed to generate jwt token") != nil {
-		return utils.NewResponse(nil, "Failed to generate jwt token", 400)
+		return utils.NewResponse(nil, "Failed to generate jwt token", http_code.BAD_REQUEST)
 	}
 	// #endregion
 
-	return utils.NewResponse(token, "Login success", 200)
+	return utils.NewResponse(token, "Login success", http_code.OK)
 }

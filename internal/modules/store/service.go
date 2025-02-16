@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/lkphuong/room-management/configs/http_code"
 	receipt "github.com/lkphuong/room-management/internal/modules/receipt"
 	room "github.com/lkphuong/room-management/internal/modules/room"
 	"github.com/lkphuong/room-management/internal/utils"
@@ -22,17 +23,17 @@ func (s *Service) GetStores(ctx context.Context, db *sql.DB) *utils.Response {
 
 	stores, err := repository.GetStores(ctx, db)
 	if utils.FailOnError(err, "Failed to get stores") != nil {
-		return utils.NewResponse(nil, "Failed to get stores", 400)
+		return utils.NewResponse(nil, "Failed to get stores", http_code.BAD_REQUEST)
 	}
 
 	rooms, err := roomRepository.GetRooms(ctx, db)
 	if utils.FailOnError(err, "Failed to get rooms") != nil {
-		return utils.NewResponse(nil, "Failed to get rooms", 400)
+		return utils.NewResponse(nil, "Failed to get rooms", http_code.BAD_REQUEST)
 	}
 
 	revenue, err := receiptRepository.RevenueStore(ctx, db)
 	if utils.FailOnError(err, "Failed to get revenue") != nil {
-		return utils.NewResponse(nil, "Failed to get revenue", 400)
+		return utils.NewResponse(nil, "Failed to get revenue", http_code.BAD_REQUEST)
 	}
 
 	var response []AllStoreResponse
@@ -72,17 +73,17 @@ func (s *Service) GetMyStores(ctx context.Context, db *sql.DB, storeIDs []string
 
 	stores, err := repository.GetStoreByIDs(ctx, storeIDs, db)
 	if utils.FailOnError(err, "Failed to get stores") != nil {
-		return utils.NewResponse(nil, "Failed to get stores", 400)
+		return utils.NewResponse(nil, "Failed to get stores", http_code.BAD_REQUEST)
 	}
 
 	rooms, err := roomRepository.GetRooms(ctx, db)
 	if utils.FailOnError(err, "Failed to get rooms") != nil {
-		return utils.NewResponse(nil, "Failed to get rooms", 400)
+		return utils.NewResponse(nil, "Failed to get rooms", http_code.BAD_REQUEST)
 	}
 
 	revenue, err := receiptRepository.RevenueStore(ctx, db)
 	if utils.FailOnError(err, "Failed to get revenue") != nil {
-		return utils.NewResponse(nil, "Failed to get revenue", 400)
+		return utils.NewResponse(nil, "Failed to get revenue", http_code.BAD_REQUEST)
 	}
 
 	var response []AllStoreResponse

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/lkphuong/room-management/configs/http_code"
 	"github.com/pkg/errors"
 )
 
@@ -19,9 +20,9 @@ func NewResponse(
 	codes ...int,
 ) *Response {
 
-	httpCode := 200        // default value
-	errorCode := 0         // default value
-	var errors interface{} // default value is nil
+	httpCode := http_code.OK // default value
+	errorCode := 0           // default value
+	var errors interface{}   // default value is nil
 
 	if len(codes) > 0 {
 		httpCode = codes[0]
