@@ -16,7 +16,9 @@ func RoomStatus(c *gin.Context) {
 
 	store := c.Query("store")
 
-	result := service.GetRoomByStores(ctx, db, store)
+	user := utils.GetInfoUser(c)
+
+	result := service.GetRoomByStore(ctx, db, store, user)
 
 	utils.JSONResponse(*result, c)
 }

@@ -14,7 +14,8 @@ const (
 				HoaDon
 				JOIN Ca ON Ca.id = HoaDon.ca_id
 			WHERE
-				ca.date = CONVERT(varchar, GETDATE (), 23)
+				Ca.[end] IS NULL
+				AND Ca.date > '2025-01-01'
 				AND HoaDon.trangthai = 4
 			GROUP BY
 				HoaDon.cuahang_id) a1
@@ -27,7 +28,8 @@ const (
 					JOIN HoaDon_ChiTietHangHoa ON HoaDon.id = HoaDon_ChiTietHangHoa.bill_id
 					JOIN Ca ON ca.id = HoaDon.ca_id
 				WHERE
-					ca.date = CONVERT(varchar, GETDATE (), 23)
+					Ca.[end] IS NULL
+					AND Ca.date > '2025-01-01'
 					AND HoaDon.trangthai = 4
 					AND HoaDon_ChiTietHangHoa.trangthai = 4
 					AND hoadon.finish IS NULL

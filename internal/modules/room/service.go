@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/lkphuong/room-management/configs/hardcode"
 	receipt "github.com/lkphuong/room-management/internal/modules/receipt"
 	"github.com/lkphuong/room-management/internal/utils"
 )
@@ -15,7 +16,20 @@ var (
 
 type Service struct{}
 
-func (s *Service) GetRoomByStores(ctx context.Context, db *sql.DB, store string) *utils.Response {
+func (s *Service) GetRoomByStore(ctx context.Context, db *sql.DB, store string, user utils.JwtPayload) *utils.Response {
+	// #region check if user has permission to access this store
+	storeIDs := user.StoreIDs
+	flag := false
+	for _, storeID := range storeIDs {
+		if storeID == store {
+			flag = true
+			break
+		}
+	}
+	if !flag && user.Code != hardcode.OPERATOR_ACCOUNT {
+		return utils.NewResponse(nil, "You don't have permission to access this store", 400)
+	}
+	// #endregion
 
 	var rooms []RoomResponse
 

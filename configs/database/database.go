@@ -10,9 +10,8 @@ import (
 	_ "github.com/microsoft/go-mssqldb"
 )
 
-func ConnectionSqlServcer() *sql.DB {
+func ConnectionSqlServer() *sql.DB {
 	err := godotenv.Load()
-	fmt.Println("error 1234: ", err)
 	if err != nil {
 		panic("Error loading .env file")
 	}
@@ -25,6 +24,30 @@ func ConnectionSqlServcer() *sql.DB {
 
 	connString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%s;database=%s;encrypt=disable;",
 		databaseHost, databaseUser, databasePassword, databasePort, databaseName)
+
+	db, err := sql.Open("sqlserver", connString)
+	if err != nil {
+		log.Fatal("Open connection failed:", err.Error())
+	}
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatal("Cannot connect: ", err.Error())
+	}
+
+	fmt.Println("Connected!")
+
+	return db
+}
+
+func DynamicConnectionSqlServer(host string, user string, pwd string, port string, name string) *sql.DB {
+	err := godotenv.Load()
+	if err != nil {
+		panic("Error loading .env file")
+	}
+
+	connString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%s;database=%s;encrypt=disable;",
+		host, user, pwd, port, name)
 
 	db, err := sql.Open("sqlserver", connString)
 	if err != nil {

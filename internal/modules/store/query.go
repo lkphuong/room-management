@@ -14,4 +14,18 @@ const (
             store_id,
             store_name
 	`
+
+	SELECT_STORES_BY_IDS = `
+        SELECT
+            store_id,
+            store_name,
+            count(store_id) AS room_count
+        FROM
+            store
+            JOIN phong ON (store_id = cuahang_id AND phong.trangthai = 4)
+        WHERE store_id NOT IN ('30','2','26') AND store_id IN (%s)
+        GROUP BY
+            store_id,
+            store_name
+    `
 )

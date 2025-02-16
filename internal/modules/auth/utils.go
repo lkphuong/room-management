@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func generateJWTToken(user LoginResponse) (string, error) {
+func generateJWTToken(user JwtPayload) (string, error) {
 	err := godotenv.Load()
 	if err != nil {
 		return "", fmt.Errorf("error loading .env file: %v", err)
@@ -22,10 +22,11 @@ func generateJWTToken(user LoginResponse) (string, error) {
 
 	expirationTime := time.Now().Add(180 * 24 * time.Hour)
 	claims := jwt.MapClaims{
-		"code": user.Code,
-		"name": user.Name,
-		"exp":  expirationTime.Unix(),
-		"iat":  time.Now().Unix(),
+		"code":      user.Code,
+		"name":      user.Name,
+		"store_ids": user.StoreIDs,
+		"exp":       expirationTime.Unix(),
+		"iat":       time.Now().Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
