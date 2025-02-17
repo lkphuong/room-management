@@ -5,7 +5,9 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/lkphuong/room-management/configs/database"
 	"github.com/lkphuong/room-management/configs/http_code"
+	config "github.com/lkphuong/room-management/internal/modules/config"
 	receipt "github.com/lkphuong/room-management/internal/modules/receipt"
 	room "github.com/lkphuong/room-management/internal/modules/room"
 	"github.com/lkphuong/room-management/internal/utils"
@@ -15,12 +17,13 @@ var (
 	repository        Repository
 	roomRepository    room.Repository
 	receiptRepository receipt.Repository
+	configRepository config.Repository
 )
 
 type Service struct{}
 
 func (s *Service) GetStores(ctx context.Context, db *sql.DB) *utils.Response {
-
+	
 	stores, err := repository.GetStores(ctx, db)
 	if utils.FailOnError(err, "Failed to get stores") != nil {
 		return utils.NewResponse(nil, "Failed to get stores", http_code.BAD_REQUEST)
@@ -70,18 +73,26 @@ func (s *Service) GetStores(ctx context.Context, db *sql.DB) *utils.Response {
 }
 
 func (s *Service) GetMyStores(ctx context.Context, db *sql.DB, storeIDs []string) *utils.Response {
+	configData, err := configRepository.ConfigStoreDetail(ctx,db,storeIDs[0])
 
-	stores, err := repository.GetStoreByIDs(ctx, storeIDs, db)
+	if utils.FailOnError(err, "Failed to get Store detail") != nil {
+		return utils.NewResponse(nil, "Failed to get Store detail", http_code.BAD_REQUEST)
+	}
+
+	newDB := database.DynamicConnectionSqlServer(configData.Host,configData.Username,configData.Password,configData.Port,configData.Database)
+	defer newDB.Close()
+
+	stores, err := repository.GetStoreByIDs(ctx, storeIDs, newDB)
 	if utils.FailOnError(err, "Failed to get stores") != nil {
 		return utils.NewResponse(nil, "Failed to get stores", http_code.BAD_REQUEST)
 	}
 
-	rooms, err := roomRepository.GetRooms(ctx, db)
+	rooms, err := roomRepository.GetRooms(ctx, newDB)
 	if utils.FailOnError(err, "Failed to get rooms") != nil {
 		return utils.NewResponse(nil, "Failed to get rooms", http_code.BAD_REQUEST)
 	}
 
-	revenue, err := receiptRepository.RevenueStore(ctx, db)
+	revenue, err := receiptRepository.RevenueStore(ctx, newDB)
 	if utils.FailOnError(err, "Failed to get revenue") != nil {
 		return utils.NewResponse(nil, "Failed to get revenue", http_code.BAD_REQUEST)
 	}

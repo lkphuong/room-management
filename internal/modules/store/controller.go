@@ -24,6 +24,7 @@ func GetMyStores(c *gin.Context) {
 	ctx := r.Context()
 
 	user := utils.GetInfoUser(c)
+	storeIDs := user.StoreIDs
 
 	if user.Code == hardcode.OPERATOR_ACCOUNT {
 		result := service.GetStores(ctx, db)
@@ -32,8 +33,6 @@ func GetMyStores(c *gin.Context) {
 
 		return
 	}
-
-	storeIDs := user.StoreIDs
 
 	result := service.GetMyStores(ctx, db, storeIDs)
 
