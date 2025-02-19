@@ -2,6 +2,7 @@ package reservation
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/lkphuong/room-management/configs/hardcode"
 	"github.com/lkphuong/room-management/internal/utils"
 )
 
@@ -19,8 +20,19 @@ func GetAll(c *gin.Context) {
 
 	q.KeyWork = KeyWork
 
+	user := utils.GetInfoUser(c)
+	storeIDs := user.StoreIDs
 
-	result := service.GetReservationAll(ctx, db, q)
+	if user.Code == hardcode.OPERATOR_ACCOUNT {
+		
+		result := service.GetReservationAll(ctx, db, q)
 
+		utils.JSONResponse(*result, c)
+
+		return
+	}
+
+	result := service.GetMyReservation(ctx, db, q, storeIDs)
+		
 	utils.JSONResponse(*result, c)
 }

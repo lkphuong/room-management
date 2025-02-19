@@ -15,7 +15,6 @@ func (cs *Repository) ConfigStoreDetail(ctx context.Context, db *sql.DB, storeID
 	var configValue ConfigStoreResponse
 
 	err := queries.Raw(fmt.Sprintf(SELECT_CONFIG_STORE,storeID)).Bind(ctx, db, &configValue)
-	fmt.Println("1dfasdfasfasf")
 
 	if err != nil {
 		return nil, fmt.Errorf("error executing query for storeID '%s': %v", storeID, err)
