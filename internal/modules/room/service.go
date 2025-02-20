@@ -4,29 +4,48 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/lkphuong/room-management/configs/database"
+	"github.com/lkphuong/room-management/configs/http_code"
+	config "github.com/lkphuong/room-management/internal/modules/config"
 	receipt "github.com/lkphuong/room-management/internal/modules/receipt"
 	"github.com/lkphuong/room-management/internal/utils"
+	"github.com/lkphuong/room-management/internal/validations"
 )
 
 var (
 	repository        Repository
 	receiptRepository receipt.Repository
+	configRepository config.Repository
 )
 
 type Service struct{}
 
-func (s *Service) GetRoomByStores(ctx context.Context, db *sql.DB, store string) *utils.Response {
+func (s *Service) GetRoomByStore(ctx context.Context, db *sql.DB, store string, user utils.JwtPayload) *utils.Response {
+	storeIDs := user.StoreIDs
+	configData, errr := configRepository.ConfigStoreDetail(ctx,db,storeIDs[0])
+
+	if utils.FailOnError(errr, "Failed to get Store detail") != nil {
+		return utils.NewResponse(nil, "Failed to get Store detail", http_code.BAD_REQUEST)
+	}
+
+	newDB := database.DynamicConnectionSqlServer(configData.Host,configData.Username,configData.Password,configData.Port,configData.Database)
+	defer newDB.Close()
+
+	errMsg := validations.ValidateUserInStore(store, user)
+	if errMsg != nil {
+		return utils.NewResponse(nil, *errMsg, http_code.BAD_REQUEST)
+	}
 
 	var rooms []RoomResponse
 
-	rooms, err := repository.GetRoomsByStore(ctx, db, store)
+	rooms, err := repository.GetRoomsByStore(ctx, newDB, store)
 	if utils.FailOnError(err, "Failed to get rooms") != nil {
-		return utils.NewResponse(nil, "Failed to get rooms", 400)
+		return utils.NewResponse(nil, "Failed to get rooms", http_code.BAD_REQUEST)
 	}
 
-	revenue, err := receiptRepository.RevenueRoom(ctx, db, store)
+	revenue, err := receiptRepository.RevenueRoom(ctx, newDB, store)
 	if utils.FailOnError(err, "Failed to get revenue") != nil {
-		return utils.NewResponse(nil, "Failed to get revenue", 400)
+		return utils.NewResponse(nil, "Failed to get revenue", http_code.BAD_REQUEST)
 	}
 
 	var counter = 0
@@ -43,7 +62,7 @@ func (s *Service) GetRoomByStores(ctx context.Context, db *sql.DB, store string)
 
 		start, err := utils.FormatDateString(room.Start)
 		if utils.FailOnError(err, "Failed to convert start date") != nil {
-			return utils.NewResponse(nil, "Failed to convert start date", 400)
+			return utils.NewResponse(nil, "Failed to convert start date", http_code.BAD_REQUEST)
 		}
 
 		roomResponse.Start = utils.ConvertTime(start)

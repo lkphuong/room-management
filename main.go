@@ -9,6 +9,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/lkphuong/room-management/internal/modules/auth"
 	"github.com/lkphuong/room-management/internal/modules/receipt"
+	"github.com/lkphuong/room-management/internal/modules/reservation"
 	"github.com/lkphuong/room-management/internal/modules/room"
 	"github.com/lkphuong/room-management/internal/modules/store"
 )
@@ -38,6 +39,7 @@ func main() {
 		room.RoomRoutes(api)
 		store.StoreRoutes(api)
 		receipt.ReceiptRoutes(api)
+		reservation.ReservationRoutes(api)
 	}
 
 	r.Run(httpPort)

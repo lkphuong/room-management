@@ -22,7 +22,9 @@ func ReceiptDetail(c *gin.Context) {
 	p.Room = room
 	p.Store = store
 
-	result := service.GetBillDetail(ctx, db, p)
+	user := utils.GetInfoUser(c)
+
+	result := service.GetBillDetail(ctx, db, p, user)
 
 	utils.JSONResponse(*result, c)
 }

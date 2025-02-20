@@ -11,5 +11,9 @@ func StoreRoutes(r *gin.RouterGroup) {
 		storeGroup.GET("/", middleware.ValidateToken(), func(c *gin.Context) {
 			GetAll(c)
 		})
+
+		storeGroup.GET("/my-stores", middleware.ValidateToken(), func(c *gin.Context) {
+			GetMyStores(c)
+		})
 	}
 }

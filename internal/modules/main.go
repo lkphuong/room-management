@@ -17,7 +17,7 @@ var (
 )
 
 func GetDB() *sql.DB {
-	db := sqlserver.ConnectionSqlServcer()
+	db := sqlserver.ConnectionSqlServer()
 
 	boil.SetDB(db)
 

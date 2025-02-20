@@ -1,4 +1,4 @@
-package room
+package reservation
 
 import (
 	"github.com/gin-gonic/gin"
@@ -9,16 +9,16 @@ var (
 	service *Service
 )
 
-func RoomStatus(c *gin.Context) {
+func GetAll(c *gin.Context) {
 	r := c.Request
-
 	ctx := r.Context()
 
-	store := c.Query("store")
+	var q ReservationQueryAll
 
-	user := utils.GetInfoUser(c)
+	KeyWork := c.DefaultQuery("keywork", "")
 
-	result := service.GetRoomByStore(ctx, db, store, user)
+	q.KeyWork = KeyWork
 
+	result := service.GetReservationAll(ctx, db, q)
 	utils.JSONResponse(*result, c)
 }

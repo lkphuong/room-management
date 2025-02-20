@@ -29,11 +29,12 @@ func ValidateToken() gin.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
+
+			c.Set("user", token.Claims)
 			return mySigningKey, nil
 		})
 
 		if err != nil {
-			fmt.Println("check here 123")
 			utils.SadResp(err, http.StatusUnauthorized, c)
 			c.Abort()
 		}

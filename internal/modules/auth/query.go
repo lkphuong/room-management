@@ -1,5 +1,20 @@
 package auth
 
 const (
-	LOGIN = `select id, code, name from NhanVien2 where code = '%s' and password = '%s' and trangthai = 4 and is_locked = 0`
+	LOGIN = `
+		SELECT
+			NhanVien2.id,
+			NhanVien2.code,
+			NhanVien2.name,
+			NhanVien_CuaHang.cuahang_id as store_id
+		FROM
+			NhanVien2
+			JOIN NhanVien_CuaHang ON NhanVien2.code = NhanVien_CuaHang.user_id
+		WHERE
+			code = '%s'
+			AND password = '%s'
+			AND NhanVien2.trangthai = 4
+			AND NhanVien_CuaHang.trangthai = 4
+			AND is_locked = 0
+	`
 )

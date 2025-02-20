@@ -10,8 +10,8 @@ import (
 
 type Repository struct{}
 
-func (au *Repository) Login(ctx context.Context, db *sql.DB, param LoginParam) (LoginResponse, error) {
-	var result LoginResponse
+func (au *Repository) Login(ctx context.Context, db *sql.DB, param LoginParam) ([]LoginResponse, error) {
+	var result []LoginResponse
 
 	err := queries.Raw(fmt.Sprintf(LOGIN, param.Username, param.Password)).Bind(ctx, db, &result)
 
